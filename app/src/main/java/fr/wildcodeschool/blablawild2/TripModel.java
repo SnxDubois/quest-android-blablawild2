@@ -19,6 +19,8 @@ public class TripModel implements Parcelable {
         this.date = date;
     }
 
+    public TripModel() {}
+
     protected TripModel(Parcel in) {
         departure = in.readString();
         destination = in.readString();

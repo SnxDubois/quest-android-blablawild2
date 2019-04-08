@@ -2,11 +2,18 @@ package fr.wildcodeschool.blablawild2;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class ItinerarySearchActivity extends AppCompatActivity {
 
@@ -32,13 +39,31 @@ public class ItinerarySearchActivity extends AppCompatActivity {
                 String date = etDate.getText().toString();
 
                 if (departure.isEmpty() || destination.isEmpty() || date.isEmpty()) {
-                    Toast.makeText(ItinerarySearchActivity.this, R.string.fill_all_fields, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ItinerarySearchActivity.this, R.string.fill_all_fields, Toast.LENGTH_LONG).show();
                 } else {
-                    Intent intent = new Intent(ItinerarySearchActivity.this, ItineraryListActivity.class);
-                    TripModel tripModel = new TripModel(departure, destination, date);
 
-                    intent.putExtra(EXTRA_TRIP, tripModel);
-                    startActivity(intent);
+                    final TripModel tripModel = new TripModel(departure, destination, date);
+
+                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                    DatabaseReference tripRef = database.getReference("trips");
+                    String key = tripRef.push().getKey();
+
+                    tripRef.child(key).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            Intent intent = new Intent(ItinerarySearchActivity.this, ItineraryListActivity.class);
+                            intent.putExtra("EXTRA_TRIP", tripModel);
+                            startActivity(intent);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            Toast.makeText(ItinerarySearchActivity.this, "Failure to read values.", Toast.LENGTH_LONG).show();
+                        }
+                    });
+
+                    tripRef.child(key).setValue(tripModel);
+
                 }
             }
         });
