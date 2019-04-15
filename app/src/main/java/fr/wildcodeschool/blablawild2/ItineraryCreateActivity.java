@@ -60,8 +60,7 @@ public class ItineraryCreateActivity extends AppCompatActivity {
                     itineraryRef.child(key).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            Intent intent = new Intent(ItineraryCreateActivity.this, ItineraryListActivity.class);
-                            startActivity(intent);
+
                         }
 
                         @Override
@@ -71,8 +70,10 @@ public class ItineraryCreateActivity extends AppCompatActivity {
                     });
 
                     itineraryRef.child(key).setValue(itineraryModel);
-
                 }
+
+                Intent intent = new Intent(ItineraryCreateActivity.this, MainActivity.class);
+                startActivity(intent);
             }
         });
 

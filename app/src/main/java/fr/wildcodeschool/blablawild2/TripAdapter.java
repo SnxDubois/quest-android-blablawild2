@@ -33,7 +33,7 @@ public class TripAdapter extends ArrayAdapter<TripModel> {
         // Lookup view for data population
         TextView tvDeparture = convertView.findViewById(R.id.tv_departure);
         TextView tvDestination = convertView.findViewById(R.id.tv_destination);
-        TextView tvDate = convertView.findViewById(R.id.tv_date);
+        TextView tvDate = convertView.findViewById(R.id.tvDate);
 
         // Populate the data into the template view using the data object
         tvDeparture.setText(tripModel.getDeparture());
